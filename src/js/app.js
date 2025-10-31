@@ -145,6 +145,23 @@ class App {
 
 		const scheduleNext = () => {
 			if (!this.isRunning) return
+
+			// 计算当前间隔，最后10张卡片逐渐变慢营造"呼吸感"
+			const maxCards = this.isMobile
+				? CONFIG.LIMITS.MAX_CARDS_MOBILE
+				: CONFIG.LIMITS.MAX_CARDS_DESKTOP
+			const currentCount = stateManager.getActiveCardCount()
+			const remainingCards = maxCards - currentCount
+
+			let currentInterval = this.dynamicSpawnInterval || spawnInterval
+
+			// 最后10张卡片，逐渐放慢速度
+			if (remainingCards <= 10 && remainingCards > 0) {
+				// 根据剩余卡片数量，间隔从1.5倍逐渐增加到3倍
+				const slowdownFactor = 1.5 + (10 - remainingCards) * 0.15
+				currentInterval = Math.floor(currentInterval * slowdownFactor)
+			}
+
 			const wow = !!(CONFIG.PERF && CONFIG.PERF.WOW_MODE)
 			if (!wow && CONFIG.PERF && CONFIG.PERF.USE_IDLE_SPAWN && 'requestIdleCallback' in window) {
 				this.spawnTimerType = 'idle'
@@ -157,16 +174,16 @@ class App {
 						}
 						// 用 setTimeout 控制节奏，避免 requestIdleCallback 过于频繁
 						this.spawnTimerType = 'timeout'
-						this.spawnTimer = setTimeout(scheduleNext, spawnInterval)
+						this.spawnTimer = setTimeout(scheduleNext, currentInterval)
 					},
-					{ timeout: spawnInterval }
+					{ timeout: currentInterval }
 				)
 			} else {
 				this.spawnTimerType = 'timeout'
 				this.spawnTimer = setTimeout(() => {
 					this.trySpawnOnce()
 					scheduleNext()
-				}, this.dynamicSpawnInterval || spawnInterval)
+				}, currentInterval)
 			}
 		}
 
