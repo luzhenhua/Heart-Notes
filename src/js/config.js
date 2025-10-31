@@ -170,7 +170,10 @@ export const CONFIG = {
 	// 爱心形状布局
 	LAYOUT: {
 		USE_HEART_SHAPE: true, // 是否使用爱心形状布局
-		EASTER_EGG_MESSAGE: '为自己的人生鲜艳上色，先把爱涂上喜欢的颜色', // 彩蛋：最后一张卡片的固定文案
+		EASTER_EGG_MESSAGES: [
+			'先把爱涂上喜欢的颜色',
+			'为自己的人生鲜艳上色'
+		], // 彩蛋：最后两张卡片的固定文案
 		// 爱心形状的参数化坐标点（基于数学公式）
 		// 使用归一化坐标 [0, 1]，将在实际使用时根据屏幕大小缩放
 		getHeartPositions: () => {

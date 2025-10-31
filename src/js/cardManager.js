@@ -29,12 +29,22 @@ export class CardManager {
 		const card = document.createElement('div')
 		card.className = 'card'
 
-		// 彩蛋：判断是否是最后一张卡片（第161张）
-		const isLastCard = stateManager.getActiveCardCount() === CONFIG.LIMITS.MAX_CARDS_DESKTOP - 1
+		// 彩蛋：判断是否是最后两张卡片（第160和161张）
+		const currentCount = stateManager.getActiveCardCount()
+		const maxCards = CONFIG.LIMITS.MAX_CARDS_DESKTOP
+		const isSecondLastCard = currentCount === maxCards - 2
+		const isLastCard = currentCount === maxCards - 1
 
-		// 随机选择颜色和消息，最后一张卡片使用彩蛋文案
+		// 随机选择颜色和消息，最后两张卡片使用彩蛋文案
 		const color = randomFrom(CONFIG.COLORS)
-		const message = isLastCard ? CONFIG.LAYOUT.EASTER_EGG_MESSAGE : randomFrom(CONFIG.MESSAGES)
+		let message
+		if (isSecondLastCard) {
+			message = CONFIG.LAYOUT.EASTER_EGG_MESSAGES[0]
+		} else if (isLastCard) {
+			message = CONFIG.LAYOUT.EASTER_EGG_MESSAGES[1]
+		} else {
+			message = randomFrom(CONFIG.MESSAGES)
+		}
 
 		// 计算位置参数
 		const cardWidth = this.isMobile
