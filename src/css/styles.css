@@ -1,0 +1,261 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	background-image: linear-gradient(0deg, #eee 1px, transparent 0),
+		linear-gradient(90deg, #eee 1px, transparent 0);
+	background-size: 30px 30px;
+	color: #333;
+	min-height: 100dvh;
+	overflow: hidden;
+}
+
+body.is-mobile {
+	overflow-y: auto;
+}
+
+#board {
+	position: relative;
+	width: 100vw;
+	height: 100dvh;
+	overflow: hidden;
+}
+
+body.is-mobile #board {
+	height: auto;
+	min-height: 100dvh;
+}
+
+.card {
+	position: absolute;
+	width: 220px;
+	border-radius: 12px;
+	/* 较轻的阴影以减少重绘开销 */
+	box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+	background: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	overflow: hidden;
+	opacity: 0;
+	transform-origin: center;
+	/* 提示浏览器进行合成层优化 */
+	will-change: transform, opacity;
+	/* 限制布局/绘制影响范围 */
+	contain: layout paint;
+	transition: transform 0.35s ease, opacity 0.35s ease, left 0.35s ease,
+		top 0.35s ease, width 0.35s ease, height 0.35s ease,
+		border-radius 0.35s ease;
+}
+
+.card.dragging {
+	transition: none;
+	box-shadow: 0 22px 45px rgba(0, 0, 0, 0.35);
+}
+
+.card.maximized {
+	box-shadow: 0 28px 60px rgba(0, 0, 0, 0.4);
+}
+
+.card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 12px;
+	background: rgba(255, 255, 255, 0.7);
+	cursor: grab;
+	user-select: none;
+	touch-action: none;
+}
+
+.card-header.dragging {
+	cursor: grabbing;
+}
+
+.window-controls {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.window-controls .control {
+	position: relative;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	background: #ccc;
+	outline: none;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.window-controls .control.close {
+	cursor: pointer;
+}
+
+.window-controls .control.minimize,
+.window-controls .control.maximize {
+	cursor: default;
+	pointer-events: none;
+}
+
+/* 可见的键盘焦点样式（无障碍改进） */
+.window-controls .control:focus-visible {
+	box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.25);
+}
+
+.window-controls .control.close {
+	background: #ff5f57;
+	border-color: #e0443e;
+}
+
+.window-controls .control.minimize {
+	background: #febb2e;
+	border-color: #dea123;
+}
+
+.window-controls .control.maximize {
+	background: #28c840;
+	border-color: #1aab2c;
+}
+
+.window-controls .control::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+.card-header:hover .window-controls .control::after {
+	opacity: 0.8;
+}
+
+.window-controls .control.close::after {
+	content: '×';
+	width: auto;
+	height: auto;
+	background: none;
+	font-size: 10px;
+	line-height: 1;
+	font-weight: 700;
+	color: rgba(0, 0, 0, 0.7);
+}
+
+.window-controls .control.minimize::after {
+	width: 6px;
+	height: 2px;
+	background: rgba(0, 0, 0, 0.6);
+}
+
+.window-controls .control.maximize::after {
+	width: 6px;
+	height: 6px;
+	background: linear-gradient(
+		45deg,
+		rgba(0, 0, 0, 0.6) 0%,
+		rgba(0, 0, 0, 0.6) 45%,
+		transparent 45%,
+		transparent 55%,
+		rgba(0, 0, 0, 0.6) 55%,
+		rgba(0, 0, 0, 0.6) 100%
+	);
+}
+
+.card-title {
+	font-size: 13px;
+	font-weight: 600;
+	color: rgba(0, 0, 0, 0.55);
+	padding-left: 10px;
+	flex: 1;
+}
+
+.card-body {
+	padding: 16px;
+	font-size: 16px;
+	line-height: 1.4;
+	font-weight: 600;
+	color: rgba(0, 0, 0, 0.72);
+}
+
+@media (max-width: 768px) {
+	.card {
+		width: 140px;
+		border-radius: 10px;
+	}
+
+	.card-body {
+		padding: 10px;
+		font-size: 12px;
+	}
+
+	.card-title {
+		font-size: 11px;
+	}
+
+	.card-header {
+		padding: 8px 10px;
+	}
+
+	.window-controls .control {
+		width: 10px;
+		height: 10px;
+	}
+}
+
+.footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 12px 20px;
+	text-align: center;
+	font-size: 13px;
+	color: rgba(0, 0, 0, 0.5);
+	background: transparent;
+	z-index: 1000;
+}
+
+.footer-line {
+	margin: 4px 0;
+}
+
+.footer a {
+	color: rgba(0, 0, 0, 0.7);
+	text-decoration: none;
+	font-weight: 600;
+	transition: color 0.2s ease;
+	display: inline-flex;
+	align-items: center;
+}
+
+.footer a:hover {
+	color: rgba(0, 0, 0, 0.9);
+}
+
+@media (max-width: 768px) {
+	.footer {
+		font-size: 11px;
+		padding: 10px 16px;
+	}
+}
+
+/* 遵循系统"减少动态效果"偏好 */
+@media (prefers-reduced-motion: reduce) {
+	* {
+		scroll-behavior: auto !important;
+	}
+
+	.card,
+	.card *,
+	.window-controls .control::after {
+		transition: none !important;
+	}
+}
