@@ -28,6 +28,7 @@ class App {
 		this._fpsRafId = null
 		this._fpsState = { last: performance.now(), frames: 0, acc: 0 }
 		this.isAppInitialized = false
+		this.hasReachedMaxCards = false // 标记是否已达到最大卡片数
 	}
 
 	/**
@@ -57,7 +58,7 @@ class App {
 		// 初始化卡片
 		this.createInitialCards()
 
-		// 启动自动创建卡片
+		// 启动自动创建卡片（达到最大值后会自动停止）
 		this.startAutoSpawn()
 
 		// 绑定窗口事件（使用防抖优化）
@@ -215,6 +216,11 @@ class App {
 	}
 
 	trySpawnOnce() {
+		// 如果已经达到过最大卡片数，不再生成新卡片
+		if (this.hasReachedMaxCards) {
+			return
+		}
+
 		const maxCards = this.isMobile
 			? CONFIG.LIMITS.MAX_CARDS_MOBILE
 			: CONFIG.LIMITS.MAX_CARDS_DESKTOP
@@ -228,8 +234,13 @@ class App {
 			for (let i = 0; i < canCreate; i++) {
 				this.cardManager.createCard()
 			}
-		} else if (CONFIG.DEBUG) {
-			console.log('已达到卡片上限，跳过创建')
+		} else {
+			// 达到最大卡片数，标记并停止自动生成
+			if (!this.hasReachedMaxCards) {
+				this.hasReachedMaxCards = true
+				this.stopAutoSpawn()
+				if (CONFIG.DEBUG) console.log('已达到最大卡片数，停止自动生成')
+			}
 		}
 	}
 
@@ -268,11 +279,11 @@ class App {
 			// 更新卡片管理器状态
 			this.cardManager.handleResize()
 
-			// 如果移动端状态改变，重启自动生成
-			if (wasMobile !== this.isMobile) {
-				if (CONFIG.DEBUG) console.log(`设备模式切换: ${this.isMobile ? '移动端' : '桌面端'}`)
-				this.startAutoSpawn()
-			}
+			// 不再需要重启自动生成，因为已禁用自动生成
+			// if (wasMobile !== this.isMobile) {
+			// 	if (CONFIG.DEBUG) console.log(`设备模式切换: ${this.isMobile ? '移动端' : '桌面端'}`)
+			// 	this.startAutoSpawn()
+			// }
 		}, CONFIG.ANIMATION.RESIZE_DEBOUNCE)
 
 		window.addEventListener('resize', handleResize)
@@ -283,8 +294,11 @@ class App {
 				if (CONFIG.DEBUG) console.log('页面隐藏，暂停卡片生成')
 				this.stopAutoSpawn()
 			} else {
-				if (CONFIG.DEBUG) console.log('页面可见，恢复卡片生成')
-				this.startAutoSpawn()
+				// 只有在未达到最大卡片数时才恢复生成
+				if (!this.hasReachedMaxCards) {
+					if (CONFIG.DEBUG) console.log('页面可见，恢复卡片生成')
+					this.startAutoSpawn()
+				}
 			}
 		})
 	}
