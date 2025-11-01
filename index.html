@@ -9,16 +9,16 @@
 		<link rel="stylesheet" href="src/css/styles.css" />
 	</head>
 	<body>
-		<!-- 全局主题和全屏按钮 -->
-		<button class="theme-toggle" id="themeToggle" type="button" aria-label="切换主题">
-			<span class="theme-toggle-icon">🌙</span>
-		</button>
 		<button class="fullscreen-toggle" id="fullscreenToggle" type="button" aria-label="切换全屏">
 			<span class="fullscreen-toggle-icon">⛶</span>
 		</button>
 
 		<!-- 引导页 -->
 		<div id="welcomePage" class="welcome-page">
+			<!-- 引导页的主题切换按钮 -->
+			<button class="theme-toggle" id="themeToggle" type="button" aria-label="切换主题">
+				<span class="theme-toggle-icon">🌙</span>
+			</button>
 			<div class="welcome-content">
 				<h1 class="welcome-title">Heart Notes</h1>
 				<div class="welcome-enter" id="startButton">
@@ -51,6 +51,10 @@
 
 		<!-- 主应用界面 -->
 		<div id="mainApp" class="main-app" style="display: none;">
+			<!-- 卡片页面的音乐控制按钮 -->
+			<button class="music-toggle" id="musicToggle" type="button" aria-label="音乐控制">
+				<span class="music-toggle-icon">🎵</span>
+			</button>
 			<div id="board" role="region" aria-label="便签板"></div>
 			<footer class="footer">
 				<div class="footer-line">

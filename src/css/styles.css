@@ -338,7 +338,7 @@ body.light-theme .card-body {
 	}
 }
 
-/* 主题切换按钮 */
+/* 主题切换按钮（仅在引导页显示） */
 .theme-toggle {
 	position: fixed;
 	top: 20px;
@@ -379,6 +379,64 @@ body.light-theme .card-body {
 
 .theme-toggle:hover .theme-toggle-icon {
 	transform: rotate(20deg);
+}
+
+/* 音乐控制按钮（仅在主应用显示） */
+.music-toggle {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	box-shadow: 0 4px 12px var(--card-shadow);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10002;
+	transition: all 0.3s ease;
+	outline: none;
+}
+
+.music-toggle:hover {
+	transform: scale(1.1);
+	box-shadow: 0 6px 16px var(--card-shadow-drag);
+}
+
+.music-toggle:active {
+	transform: scale(0.95);
+}
+
+.music-toggle:focus-visible {
+	box-shadow: 0 0 0 3px var(--control-focus);
+}
+
+.music-toggle-icon {
+	font-size: 24px;
+	line-height: 1;
+	transition: transform 0.3s ease;
+}
+
+/* 播放中的旋转动画 */
+.music-toggle.playing .music-toggle-icon {
+	animation: musicRotate 10s linear infinite;
+}
+
+/* 暂停时保持当前旋转角度 */
+.music-toggle.paused .music-toggle-icon {
+	animation-play-state: paused;
+}
+
+@keyframes musicRotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 /* 全屏切换按钮 */
@@ -440,6 +498,17 @@ body.light-theme .card-body {
 	}
 
 	.theme-toggle-icon {
+		font-size: 20px;
+	}
+
+	.music-toggle {
+		width: 40px;
+		height: 40px;
+		top: 16px;
+		right: 16px;
+	}
+
+	.music-toggle-icon {
 		font-size: 20px;
 	}
 }

@@ -8,6 +8,7 @@ import { debounce, isMobileDevice } from './utils.js'
 import { stateManager } from './stateManager.js'
 import { CardManager } from './cardManager.js'
 import { themeManager } from './themeManager.js'
+import { musicControlManager } from './musicControlManager.js'
 import { fullscreenManager } from './fullscreenManager.js'
 import { audioManager } from './audioManager.js'
 
@@ -36,7 +37,8 @@ class App {
 		if (CONFIG.DEBUG) console.log('初始化便签墙应用')
 		this.isRunning = true
 
-		// 主题和全屏管理器已在引导页初始化，无需重复初始化
+		// 初始化音乐控制管理器（在主应用页面）
+		musicControlManager.init()
 
 		// 初始化卡片管理器
 		this.cardManager = new CardManager(this.board)
@@ -63,8 +65,10 @@ class App {
 
 		this.isAppInitialized = true
 
-		// 启动背景音乐
-		audioManager.play()
+		// 启动背景音乐并同步UI状态
+		audioManager.play().then(() => {
+			musicControlManager.syncUIState()
+		})
 	}
 
 	startFpsMonitor() {

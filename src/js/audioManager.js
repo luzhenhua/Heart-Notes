@@ -86,6 +86,18 @@ class AudioManager {
 	}
 
 	/**
+	 * 切换播放/暂停
+	 */
+	async toggle() {
+		if (this.isPlaying) {
+			this.pause()
+		} else {
+			await this.play()
+		}
+		return this.isPlaying
+	}
+
+	/**
 	 * 设置音量
 	 * @param {number} volume - 音量值 (0-1)
 	 */
