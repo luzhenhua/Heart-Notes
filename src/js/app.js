@@ -8,6 +8,7 @@ import { debounce, isMobileDevice } from './utils.js'
 import { stateManager } from './stateManager.js'
 import { CardManager } from './cardManager.js'
 import { themeManager } from './themeManager.js'
+import { fullscreenManager } from './fullscreenManager.js'
 
 /**
  * 应用类
@@ -35,6 +36,9 @@ class App {
 
 		// 初始化主题管理器（必须在创建卡片之前初始化）
 		themeManager.init()
+
+		// 初始化全屏管理器
+		fullscreenManager.init()
 
 		// 初始化动态节奏
 		const base = this.isMobile

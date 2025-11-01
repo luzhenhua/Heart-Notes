@@ -549,6 +549,71 @@ export class CardManager {
 	}
 
 	/**
+	 * 重新布局所有卡片（用于全屏切换等窗口尺寸变化）
+	 */
+	relayoutCards() {
+		if (!CONFIG.LAYOUT.USE_HEART_SHAPE) return
+
+		const cards = document.querySelectorAll('.card')
+		if (cards.length === 0) return
+
+		// 计算参数
+		const cardWidth = this.isMobile
+			? CONFIG.CARD.MOBILE_WIDTH
+			: CONFIG.CARD.DESKTOP_WIDTH
+		const cardHeight = this.isMobile
+			? CONFIG.CARD.MOBILE_HEIGHT
+			: CONFIG.CARD.DESKTOP_HEIGHT
+		const horizontalMargin = this.isMobile
+			? CONFIG.SPACING.MOBILE_HORIZONTAL
+			: CONFIG.SPACING.DESKTOP_HORIZONTAL
+		const verticalMargin = this.isMobile
+			? CONFIG.SPACING.MOBILE_VERTICAL
+			: CONFIG.SPACING.DESKTOP_VERTICAL
+
+		// 计算可用区域
+		const availableWidth = window.innerWidth - cardWidth - horizontalMargin * 2
+		const availableHeight = window.innerHeight - cardHeight - verticalMargin * 2 - 60 // 减去footer高度
+
+		// 计算爱心的缩放比例
+		const scaleRatio = this.isMobile ? 0.7 : 0.85
+		const scale = Math.min(availableWidth, availableHeight) * scaleRatio
+
+		// 计算中心偏移
+		const centerOffsetX = horizontalMargin + (availableWidth - scale) / 2
+		const centerOffsetY = verticalMargin + (availableHeight - scale) / 2
+
+		// 重新定位每张卡片
+		cards.forEach((card, index) => {
+			const state = stateManager.getCardState(card)
+			if (!state || state.maximized || state.closing) return
+
+			// 获取对应的爱心位置
+			const position = this.heartPositions[index % this.heartPositions.length]
+
+			// 计算新位置
+			let newLeft = centerOffsetX + position.x * scale
+			let newTop = centerOffsetY + position.y * scale
+
+			// 添加随机偏移
+			const randomOffset = this.isMobile ? 8 : 15
+			newLeft += (Math.random() - 0.5) * randomOffset
+			newTop += (Math.random() - 0.5) * randomOffset
+
+			// 更新卡片位置
+			card.style.left = `${newLeft}px`
+			card.style.top = `${newTop}px`
+
+			// 更新状态
+			stateManager.updateCardState(card, {
+				left: newLeft,
+				top: newTop,
+				lastPosition: { left: newLeft, top: newTop }
+			})
+		})
+	}
+
+	/**
 	 * 处理窗口大小变化
 	 */
 	handleResize() {
@@ -560,5 +625,8 @@ export class CardManager {
 			maximizedCard.style.width = `${window.innerWidth}px`
 			maximizedCard.style.height = `${window.innerHeight}px`
 		}
+
+		// 重新布局爱心形状的卡片
+		this.relayoutCards()
 	}
 }

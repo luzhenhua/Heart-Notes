@@ -381,6 +381,49 @@ body.light-theme .card-body {
 	transform: rotate(20deg);
 }
 
+/* 全屏切换按钮 */
+.fullscreen-toggle {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	box-shadow: 0 4px 12px var(--card-shadow);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10001;
+	transition: all 0.3s ease;
+	outline: none;
+}
+
+.fullscreen-toggle:hover {
+	transform: scale(1.1);
+	box-shadow: 0 6px 16px var(--card-shadow-drag);
+}
+
+.fullscreen-toggle:active {
+	transform: scale(0.95);
+}
+
+.fullscreen-toggle:focus-visible {
+	box-shadow: 0 0 0 3px var(--control-focus);
+}
+
+.fullscreen-toggle-icon {
+	font-size: 22px;
+	line-height: 1;
+	transition: transform 0.3s ease;
+}
+
+.fullscreen-toggle:hover .fullscreen-toggle-icon {
+	transform: scale(1.15);
+}
+
 @media (max-width: 768px) {
 	.theme-toggle {
 		width: 40px;
@@ -391,6 +434,17 @@ body.light-theme .card-body {
 
 	.theme-toggle-icon {
 		font-size: 20px;
+	}
+
+	.fullscreen-toggle {
+		width: 40px;
+		height: 40px;
+		bottom: 16px;
+		right: 16px;
+	}
+
+	.fullscreen-toggle-icon {
+		font-size: 18px;
 	}
 }
 
