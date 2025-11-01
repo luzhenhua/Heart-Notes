@@ -1,3 +1,71 @@
+:root {
+	/* 默认使用黑暗模式 */
+	--bg-grid-color: #2a2a2a;
+	--bg-base-color: #1a1a1a;
+	--text-primary: #e0e0e0;
+	--text-secondary: rgba(255, 255, 255, 0.85);
+	--text-tertiary: rgba(255, 255, 255, 0.65);
+	--text-muted: rgba(255, 255, 255, 0.5);
+	--text-link: rgba(255, 255, 255, 0.75);
+	--text-link-hover: rgba(255, 255, 255, 0.95);
+
+	--card-bg: #2d2d2d;
+	--card-border: rgba(255, 255, 255, 0.1);
+	--card-shadow: rgba(0, 0, 0, 0.4);
+	--card-shadow-drag: rgba(0, 0, 0, 0.6);
+	--card-shadow-max: rgba(0, 0, 0, 0.7);
+	--card-header-bg: rgba(45, 45, 45, 0.8);
+
+	--control-border: rgba(255, 255, 255, 0.15);
+	--control-focus: rgba(255, 255, 255, 0.3);
+	--control-icon: rgba(255, 255, 255, 0.7);
+	--control-icon-close: rgba(0, 0, 0, 0.8);
+
+	/* 卡片颜色变量（黑暗模式） */
+	--card-color-0: #4a3942;
+	--card-color-1: #2f4858;
+	--card-color-2: #5a4a3a;
+	--card-color-3: #3a4a3a;
+	--card-color-4: #473a5a;
+	--card-color-5: #4a4a38;
+	--card-color-6: #364852;
+	--card-color-7: #52385a;
+}
+
+/* 浅色模式配色方案 */
+body.light-theme {
+	--bg-grid-color: #eee;
+	--bg-base-color: #fff;
+	--text-primary: #333;
+	--text-secondary: rgba(0, 0, 0, 0.72);
+	--text-tertiary: rgba(0, 0, 0, 0.55);
+	--text-muted: rgba(0, 0, 0, 0.5);
+	--text-link: rgba(0, 0, 0, 0.7);
+	--text-link-hover: rgba(0, 0, 0, 0.9);
+
+	--card-bg: #fff;
+	--card-border: rgba(0, 0, 0, 0.08);
+	--card-shadow: rgba(0, 0, 0, 0.18);
+	--card-shadow-drag: rgba(0, 0, 0, 0.35);
+	--card-shadow-max: rgba(0, 0, 0, 0.4);
+	--card-header-bg: rgba(255, 255, 255, 0.7);
+
+	--control-border: rgba(0, 0, 0, 0.08);
+	--control-focus: rgba(0, 0, 0, 0.25);
+	--control-icon: rgba(0, 0, 0, 0.6);
+	--control-icon-close: rgba(0, 0, 0, 0.7);
+
+	/* 卡片颜色变量（浅色模式） */
+	--card-color-0: #ffe0e3;
+	--card-color-1: #c7f0ff;
+	--card-color-2: #ffd8a8;
+	--card-color-3: #d9f2d9;
+	--card-color-4: #e5d7ff;
+	--card-color-5: #f9f7d9;
+	--card-color-6: #d2f0f8;
+	--card-color-7: #ffd4f5;
+}
+
 * {
 	box-sizing: border-box;
 	margin: 0;
@@ -6,10 +74,11 @@
 
 body {
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-	background-image: linear-gradient(0deg, #eee 1px, transparent 0),
-		linear-gradient(90deg, #eee 1px, transparent 0);
+	background-color: var(--bg-base-color);
+	background-image: linear-gradient(0deg, var(--bg-grid-color) 1px, transparent 0),
+		linear-gradient(90deg, var(--bg-grid-color) 1px, transparent 0);
 	background-size: 30px 30px;
-	color: #333;
+	color: var(--text-primary);
 	min-height: 100dvh;
 	overflow: hidden;
 }
@@ -35,9 +104,9 @@ body.is-mobile #board {
 	width: 220px;
 	border-radius: 12px;
 	/* 较轻的阴影以减少重绘开销 */
-	box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
-	background: #fff;
-	border: 1px solid rgba(0, 0, 0, 0.08);
+	box-shadow: 0 12px 24px var(--card-shadow);
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
 	overflow: hidden;
 	opacity: 0;
 	transform-origin: center;
@@ -47,16 +116,26 @@ body.is-mobile #board {
 	contain: layout paint;
 	transition: transform 0.35s ease, opacity 0.35s ease, left 0.35s ease,
 		top 0.35s ease, width 0.35s ease, height 0.35s ease,
-		border-radius 0.35s ease;
+		border-radius 0.35s ease, background-color 0.3s ease;
 }
+
+/* 卡片颜色类 */
+.card.color-0 { background: var(--card-color-0); }
+.card.color-1 { background: var(--card-color-1); }
+.card.color-2 { background: var(--card-color-2); }
+.card.color-3 { background: var(--card-color-3); }
+.card.color-4 { background: var(--card-color-4); }
+.card.color-5 { background: var(--card-color-5); }
+.card.color-6 { background: var(--card-color-6); }
+.card.color-7 { background: var(--card-color-7); }
 
 .card.dragging {
 	transition: none;
-	box-shadow: 0 22px 45px rgba(0, 0, 0, 0.35);
+	box-shadow: 0 22px 45px var(--card-shadow-drag);
 }
 
 .card.maximized {
-	box-shadow: 0 28px 60px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 28px 60px var(--card-shadow-max);
 }
 
 .card-header {
@@ -64,10 +143,14 @@ body.is-mobile #board {
 	align-items: center;
 	justify-content: space-between;
 	padding: 10px 12px;
-	background: rgba(255, 255, 255, 0.7);
+	background: rgba(0, 0, 0, 0.15);
 	cursor: grab;
 	user-select: none;
 	touch-action: none;
+}
+
+body.light-theme .card-header {
+	background: rgba(255, 255, 255, 0.3);
 }
 
 .card-header.dragging {
@@ -85,7 +168,7 @@ body.is-mobile #board {
 	width: 12px;
 	height: 12px;
 	border-radius: 50%;
-	border: 1px solid rgba(0, 0, 0, 0.08);
+	border: 1px solid var(--control-border);
 	background: #ccc;
 	outline: none;
 	padding: 0;
@@ -106,7 +189,7 @@ body.is-mobile #board {
 
 /* 可见的键盘焦点样式（无障碍改进） */
 .window-controls .control:focus-visible {
-	box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.25);
+	box-shadow: 0 0 0 3px var(--control-focus);
 }
 
 .window-controls .control.close {
@@ -146,13 +229,13 @@ body.is-mobile #board {
 	font-size: 10px;
 	line-height: 1;
 	font-weight: 700;
-	color: rgba(0, 0, 0, 0.7);
+	color: var(--control-icon-close);
 }
 
 .window-controls .control.minimize::after {
 	width: 6px;
 	height: 2px;
-	background: rgba(0, 0, 0, 0.6);
+	background: var(--control-icon);
 }
 
 .window-controls .control.maximize::after {
@@ -160,21 +243,25 @@ body.is-mobile #board {
 	height: 6px;
 	background: linear-gradient(
 		45deg,
-		rgba(0, 0, 0, 0.6) 0%,
-		rgba(0, 0, 0, 0.6) 45%,
+		var(--control-icon) 0%,
+		var(--control-icon) 45%,
 		transparent 45%,
 		transparent 55%,
-		rgba(0, 0, 0, 0.6) 55%,
-		rgba(0, 0, 0, 0.6) 100%
+		var(--control-icon) 55%,
+		var(--control-icon) 100%
 	);
 }
 
 .card-title {
 	font-size: 13px;
 	font-weight: 600;
-	color: rgba(0, 0, 0, 0.55);
+	color: rgba(255, 255, 255, 0.75);
 	padding-left: 10px;
 	flex: 1;
+}
+
+body.light-theme .card-title {
+	color: rgba(0, 0, 0, 0.55);
 }
 
 .card-body {
@@ -182,6 +269,10 @@ body.is-mobile #board {
 	font-size: 16px;
 	line-height: 1.4;
 	font-weight: 600;
+	color: rgba(255, 255, 255, 0.95);
+}
+
+body.light-theme .card-body {
 	color: rgba(0, 0, 0, 0.72);
 }
 
@@ -218,7 +309,7 @@ body.is-mobile #board {
 	padding: 12px 20px;
 	text-align: center;
 	font-size: 13px;
-	color: rgba(0, 0, 0, 0.5);
+	color: var(--text-muted);
 	background: transparent;
 	z-index: 1000;
 }
@@ -228,7 +319,7 @@ body.is-mobile #board {
 }
 
 .footer a {
-	color: rgba(0, 0, 0, 0.7);
+	color: var(--text-link);
 	text-decoration: none;
 	font-weight: 600;
 	transition: color 0.2s ease;
@@ -237,13 +328,69 @@ body.is-mobile #board {
 }
 
 .footer a:hover {
-	color: rgba(0, 0, 0, 0.9);
+	color: var(--text-link-hover);
 }
 
 @media (max-width: 768px) {
 	.footer {
 		font-size: 11px;
 		padding: 10px 16px;
+	}
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	box-shadow: 0 4px 12px var(--card-shadow);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10001;
+	transition: all 0.3s ease;
+	outline: none;
+}
+
+.theme-toggle:hover {
+	transform: scale(1.1);
+	box-shadow: 0 6px 16px var(--card-shadow-drag);
+}
+
+.theme-toggle:active {
+	transform: scale(0.95);
+}
+
+.theme-toggle:focus-visible {
+	box-shadow: 0 0 0 3px var(--control-focus);
+}
+
+.theme-toggle-icon {
+	font-size: 24px;
+	line-height: 1;
+	transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-toggle-icon {
+	transform: rotate(20deg);
+}
+
+@media (max-width: 768px) {
+	.theme-toggle {
+		width: 40px;
+		height: 40px;
+		top: 16px;
+		right: 16px;
+	}
+
+	.theme-toggle-icon {
+		font-size: 20px;
 	}
 }
 

@@ -7,6 +7,7 @@ import { CONFIG } from './config.js'
 import { debounce, isMobileDevice } from './utils.js'
 import { stateManager } from './stateManager.js'
 import { CardManager } from './cardManager.js'
+import { themeManager } from './themeManager.js'
 
 /**
  * 应用类
@@ -31,6 +32,9 @@ class App {
 	init() {
 		if (CONFIG.DEBUG) console.log('初始化便签墙应用')
 		this.isRunning = true
+
+		// 初始化主题管理器（必须在创建卡片之前初始化）
+		themeManager.init()
 
 		// 初始化动态节奏
 		const base = this.isMobile

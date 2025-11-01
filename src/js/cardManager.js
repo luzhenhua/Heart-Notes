@@ -6,6 +6,7 @@
 import { CONFIG } from './config.js'
 import { randomFrom, clamp, applyTransform, isMobileDevice } from './utils.js'
 import { stateManager } from './stateManager.js'
+import { themeManager } from './themeManager.js'
 
 /**
  * 卡片管理器
@@ -36,7 +37,9 @@ export class CardManager {
 		const isLastCard = currentCount === maxCards - 1
 
 		// 随机选择颜色和消息，最后两张卡片使用彩蛋文案
-		const color = randomFrom(CONFIG.COLORS)
+		// 根据当前主题选择颜色索引
+		const colors = themeManager.getColors()
+		const colorIndex = Math.floor(Math.random() * colors.length)
 		let message
 		if (isSecondLastCard) {
 			message = CONFIG.LAYOUT.EASTER_EGG_MESSAGES[0]
@@ -102,8 +105,8 @@ export class CardManager {
 		// 不旋转，保持水平以便识别爱心形状
 		const angle = 0
 
-		// 设置样式
-		card.style.background = color
+		// 设置样式 - 使用颜色类而不是直接设置背景色
+		card.classList.add(`color-${colorIndex}`)
 		card.style.left = `${left}px`
 		card.style.top = `${top}px`
 
