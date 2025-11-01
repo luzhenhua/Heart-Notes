@@ -401,6 +401,13 @@ body.light-theme .card-body {
 	outline: none;
 }
 
+/* 移动端隐藏全屏按钮 */
+@media (max-width: 768px) {
+	.fullscreen-toggle {
+		display: none;
+	}
+}
+
 .fullscreen-toggle:hover {
 	transform: scale(1.1);
 	box-shadow: 0 6px 16px var(--card-shadow-drag);
@@ -435,17 +442,6 @@ body.light-theme .card-body {
 	.theme-toggle-icon {
 		font-size: 20px;
 	}
-
-	.fullscreen-toggle {
-		width: 40px;
-		height: 40px;
-		bottom: 16px;
-		right: 16px;
-	}
-
-	.fullscreen-toggle-icon {
-		font-size: 18px;
-	}
 }
 
 /* 引导页样式 */
@@ -476,6 +472,8 @@ body.light-theme .card-body {
 	text-align: center;
 	animation: welcomeFadeIn 1s ease-out;
 	transition: opacity 0.3s ease, visibility 0.3s ease;
+	/* 向上偏移，使标题和按钮整体居中 */
+	transform: translateY(-30px);
 }
 
 .welcome-content.hidden {
@@ -486,11 +484,11 @@ body.light-theme .card-body {
 @keyframes welcomeFadeIn {
 	from {
 		opacity: 0;
-		transform: translateY(30px);
+		transform: translateY(0px);
 	}
 	to {
 		opacity: 1;
-		transform: translateY(0);
+		transform: translateY(-30px);
 	}
 }
 
