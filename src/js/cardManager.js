@@ -75,8 +75,8 @@ export class CardManager {
 			const availableHeight = window.innerHeight - cardHeight - verticalMargin * 2 - 60 // 减去footer高度
 
 			// 计算爱心的缩放比例（取较小值以确保完整显示）
-			// 移动端使用更小的缩放比例以确保爱心完整显示
-			const scaleRatio = this.isMobile ? 0.7 : 0.85
+			// 增加缩放比例让爱心更大：桌面端从0.85增加到0.98，移动端从0.7增加到0.82
+			const scaleRatio = this.isMobile ? 0.82 : 0.98
 			const scale = Math.min(availableWidth, availableHeight) * scaleRatio
 
 			// 将归一化坐标转换为实际像素坐标（居中显示）
@@ -576,7 +576,8 @@ export class CardManager {
 		const availableHeight = window.innerHeight - cardHeight - verticalMargin * 2 - 60 // 减去footer高度
 
 		// 计算爱心的缩放比例
-		const scaleRatio = this.isMobile ? 0.7 : 0.85
+		// 增加缩放比例让爱心更大：桌面端从0.85增加到0.98，移动端从0.7增加到0.82
+		const scaleRatio = this.isMobile ? 0.82 : 0.98
 		const scale = Math.min(availableWidth, availableHeight) * scaleRatio
 
 		// 计算中心偏移

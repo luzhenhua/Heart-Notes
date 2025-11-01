@@ -353,7 +353,7 @@ body.light-theme .card-body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 10001;
+	z-index: 10002;
 	transition: all 0.3s ease;
 	outline: none;
 }
@@ -396,7 +396,7 @@ body.light-theme .card-body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 10001;
+	z-index: 10002;
 	transition: all 0.3s ease;
 	outline: none;
 }
@@ -448,6 +448,245 @@ body.light-theme .card-body {
 	}
 }
 
+/* 引导页样式 */
+.welcome-page {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: var(--bg-base-color);
+	background-image: linear-gradient(0deg, var(--bg-grid-color) 1px, transparent 0),
+		linear-gradient(90deg, var(--bg-grid-color) 1px, transparent 0);
+	background-size: 30px 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10001;
+	transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.welcome-page.hidden {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+}
+
+.welcome-content {
+	text-align: center;
+	animation: welcomeFadeIn 1s ease-out;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.welcome-content.hidden {
+	opacity: 0;
+	visibility: hidden;
+}
+
+@keyframes welcomeFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.welcome-title {
+	font-size: 64px;
+	font-weight: 700;
+	color: var(--text-primary);
+	margin-bottom: 48px;
+	letter-spacing: -0.02em;
+}
+
+.welcome-enter {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--text-secondary);
+	cursor: pointer;
+	transition: all 0.3s ease;
+	user-select: none;
+}
+
+.enter-arrow {
+	font-size: 24px;
+	transition: transform 0.3s ease;
+	display: inline-block;
+}
+
+.welcome-enter:hover {
+	color: var(--text-primary);
+}
+
+.welcome-enter:hover .enter-arrow {
+	transform: translateX(6px);
+}
+
+.welcome-enter:active {
+	transform: scale(0.95);
+}
+
+.welcome-enter.loading {
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+/* 加载覆盖层 */
+.loading-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: transparent;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.4s ease, visibility 0.4s ease;
+	pointer-events: none;
+}
+
+.loading-overlay.visible {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+/* 加载动画 - 三个点样式 */
+.loading-spinner {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.loading-spinner::before,
+.loading-spinner::after,
+.loading-dot {
+	content: '';
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--text-primary);
+	animation: dotPulse 1.4s ease-in-out infinite;
+}
+
+.loading-spinner::before {
+	animation-delay: 0s;
+}
+
+.loading-dot {
+	animation-delay: 0.35s;
+}
+
+.loading-spinner::after {
+	animation-delay: 0.7s;
+}
+
+@keyframes dotPulse {
+	0%, 100% {
+		opacity: 0.3;
+		transform: scale(0.8);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.loading-text {
+	margin-top: 20px;
+	font-size: 14px;
+	color: var(--text-tertiary);
+	font-weight: 400;
+	letter-spacing: 0.05em;
+}
+
+/* 引导页底部信息 */
+.welcome-footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 12px 20px;
+	text-align: center;
+	font-size: 13px;
+	color: var(--text-muted);
+	background: transparent;
+	z-index: 10;
+}
+
+.welcome-footer .footer-line {
+	margin: 4px 0;
+}
+
+.welcome-footer a {
+	color: var(--text-link);
+	text-decoration: none;
+	font-weight: 600;
+	transition: color 0.2s ease;
+	display: inline-flex;
+	align-items: center;
+}
+
+.welcome-footer a:hover {
+	color: var(--text-link-hover);
+}
+
+/* 主应用容器 */
+.main-app {
+	width: 100vw;
+	height: 100vh;
+	opacity: 0;
+	transition: opacity 0.6s ease;
+}
+
+.main-app.visible {
+	opacity: 1;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+	.welcome-title {
+		font-size: 48px;
+		margin-bottom: 36px;
+	}
+
+	.welcome-enter {
+		font-size: 16px;
+	}
+
+	.enter-arrow {
+		font-size: 20px;
+	}
+
+	.loading-spinner::before,
+	.loading-spinner::after,
+	.loading-dot {
+		width: 6px;
+		height: 6px;
+	}
+
+	.loading-text {
+		font-size: 12px;
+		margin-top: 16px;
+	}
+}
+
 /* 遵循系统"减少动态效果"偏好 */
 @media (prefers-reduced-motion: reduce) {
 	* {
@@ -456,7 +695,11 @@ body.light-theme .card-body {
 
 	.card,
 	.card *,
-	.window-controls .control::after {
+	.window-controls .control::after,
+	.welcome-content,
+	.loading-spinner::before,
+	.loading-spinner::after {
 		transition: none !important;
+		animation: none !important;
 	}
 }

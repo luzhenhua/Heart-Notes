@@ -127,8 +127,8 @@ export const CONFIG = {
 
 	// 卡片数量限制
 	LIMITS: {
-		MAX_CARDS_DESKTOP: 161, // 减少30%: 230 * 0.7 ≈ 161
-		MAX_CARDS_MOBILE: 161,
+		MAX_CARDS_DESKTOP: 185, // 增加到185个以形成更大的爱心
+		MAX_CARDS_MOBILE: 185,
 		INITIAL_CARDS_DESKTOP: 0, // 爱心形状不需要初始卡片
 		INITIAL_CARDS_MOBILE: 0
 	},
@@ -190,7 +190,7 @@ export const CONFIG = {
 		// 使用归一化坐标 [0, 1]，将在实际使用时根据屏幕大小缩放
 		getHeartPositions: () => {
 			const positions = []
-			const numPoints = 161 // 减少到161个点
+			const numPoints = 185 // 增加到185个点（约15%增量）
 
 			for (let i = 0; i < numPoints; i++) {
 				const t = (i / numPoints) * 2 * Math.PI

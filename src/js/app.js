@@ -9,6 +9,7 @@ import { stateManager } from './stateManager.js'
 import { CardManager } from './cardManager.js'
 import { themeManager } from './themeManager.js'
 import { fullscreenManager } from './fullscreenManager.js'
+import { audioManager } from './audioManager.js'
 
 /**
  * 应用类
@@ -16,7 +17,7 @@ import { fullscreenManager } from './fullscreenManager.js'
 class App {
 	constructor() {
 		this.board = document.getElementById('board')
-		this.cardManager = new CardManager(this.board)
+		this.cardManager = null // 延迟初始化
 		this.isMobile = isMobileDevice()
 		this.spawnTimer = null
 		this.spawnTimerType = null // 'timeout' | 'idle'
@@ -25,6 +26,7 @@ class App {
 		this.spawnBurst = 1
 		this._fpsRafId = null
 		this._fpsState = { last: performance.now(), frames: 0, acc: 0 }
+		this.isAppInitialized = false
 	}
 
 	/**
@@ -34,11 +36,10 @@ class App {
 		if (CONFIG.DEBUG) console.log('初始化便签墙应用')
 		this.isRunning = true
 
-		// 初始化主题管理器（必须在创建卡片之前初始化）
-		themeManager.init()
+		// 主题和全屏管理器已在引导页初始化，无需重复初始化
 
-		// 初始化全屏管理器
-		fullscreenManager.init()
+		// 初始化卡片管理器
+		this.cardManager = new CardManager(this.board)
 
 		// 初始化动态节奏
 		const base = this.isMobile
@@ -60,6 +61,10 @@ class App {
 		// 绑定窗口事件（使用防抖优化）
 		this.bindEvents()
 
+		this.isAppInitialized = true
+
+		// 启动背景音乐
+		audioManager.play()
 	}
 
 	startFpsMonitor() {
@@ -287,17 +292,151 @@ class App {
 		this.stopAutoSpawn()
 		this.isRunning = false
 		if (this._fpsRafId) cancelAnimationFrame(this._fpsRafId)
+		audioManager.destroy()
 		if (CONFIG.DEBUG) console.log('应用已销毁')
 	}
 }
 
-// 页面加载完成后初始化应用
+/**
+ * 引导页管理器
+ */
+class WelcomeManager {
+	constructor(app) {
+		this.app = app
+		this.welcomePage = document.getElementById('welcomePage')
+		this.mainApp = document.getElementById('mainApp')
+		this.startButton = document.getElementById('startButton')
+		this.loadingOverlay = document.getElementById('loadingOverlay')
+	}
+
+	/**
+	 * 初始化引导页
+	 */
+	init() {
+		if (CONFIG.DEBUG) console.log('初始化引导页')
+
+		// 在引导页阶段就初始化主题和全屏管理器
+		themeManager.init()
+		fullscreenManager.init()
+
+		// 绑定开始按钮点击事件
+		this.startButton.addEventListener('click', () => {
+			this.handleStart()
+		})
+	}
+
+	/**
+	 * 处理开始按钮点击
+	 */
+	async handleStart() {
+		if (CONFIG.DEBUG) console.log('用户点击开始按钮')
+
+		// 获取 welcome-content 元素
+		const welcomeContent = this.welcomePage.querySelector('.welcome-content')
+		const loadingText = document.getElementById('loadingText')
+
+		// 先隐藏标题和按钮
+		welcomeContent.classList.add('hidden')
+
+		// 等待内容淡出后再显示加载状态
+		setTimeout(() => {
+			this.loadingOverlay.classList.add('visible')
+		}, 300) // 与 CSS 过渡时间一致
+
+		try {
+			// 更新进度：加载音频
+			if (loadingText) loadingText.textContent = '正在加载音频... 0%'
+
+			// 模拟音频加载进度
+			const audioLoadPromise = audioManager.preload()
+
+			// 创建进度更新定时器
+			let progress = 0
+			const progressInterval = setInterval(() => {
+				progress = Math.min(progress + Math.random() * 15 + 5, 90)
+				if (loadingText) loadingText.textContent = `正在加载音频... ${Math.floor(progress)}%`
+			}, 100)
+
+			await audioLoadPromise
+			clearInterval(progressInterval)
+
+			// 音频加载完成
+			if (loadingText) loadingText.textContent = '正在加载音频... 100%'
+
+			// 等待一小段时间让用户看到100%
+			await new Promise(resolve => setTimeout(resolve, 300))
+
+			// 初始化应用
+			if (loadingText) loadingText.textContent = '正在初始化... 100%'
+			await new Promise(resolve => setTimeout(resolve, 400))
+
+			// 隐藏引导页
+			this.hideWelcome()
+
+			// 延迟初始化主应用，等待引导页完全隐藏
+			setTimeout(() => {
+				this.showMainApp()
+			}, 600) // 与 CSS 过渡时间一致
+		} catch (error) {
+			console.error('初始化失败:', error)
+			// 即使失败也继续
+			if (loadingText) loadingText.textContent = '加载完成'
+			this.hideWelcome()
+			setTimeout(() => {
+				this.showMainApp()
+			}, 600)
+		}
+	}
+
+	/**
+	 * 隐藏引导页
+	 */
+	hideWelcome() {
+		this.welcomePage.classList.add('hidden')
+	}
+
+	/**
+	 * 显示主应用
+	 */
+	showMainApp() {
+		this.mainApp.style.display = 'block'
+
+		// 强制重排，确保过渡效果生效
+		this.mainApp.offsetHeight
+
+		// 显示主应用
+		this.mainApp.classList.add('visible')
+
+		// 初始化主应用（如果还未初始化）
+		if (!this.app.isAppInitialized) {
+			this.app.init()
+		}
+
+		// 移除引导页 DOM（可选，节省内存）
+		setTimeout(() => {
+			if (this.welcomePage && this.welcomePage.parentNode) {
+				this.welcomePage.remove()
+			}
+		}, 1000)
+	}
+}
+
+// 页面加载完成后初始化
 if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', () => {
-		window.app = new App()
-		window.app.init()
+		const app = new App()
+		const welcomeManager = new WelcomeManager(app)
+		welcomeManager.init()
+
+		// 暴露到全局以便调试
+		window.app = app
+		window.welcomeManager = welcomeManager
 	})
 } else {
-	window.app = new App()
-	window.app.init()
+	const app = new App()
+	const welcomeManager = new WelcomeManager(app)
+	welcomeManager.init()
+
+	window.app = app
+	window.welcomeManager = welcomeManager
 }
